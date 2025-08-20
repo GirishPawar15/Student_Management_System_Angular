@@ -1,6 +1,14 @@
 # Student Management System - Angular
 
-A modern, responsive Student Management System built with Angular 20. This application provides a complete CRUD (Create, Read, Update, Delete) interface for managing student records.
+## Devolopers:  
+
+   1.Girish Pawar(Leader)                                                                                                                    
+      contact: girishpawar1512@gmail.com
+
+   2.Ziyan kazi                                                                                                                                      
+      Contact:zkazi0007@gmail.com
+
+## Output / UI 
 
 ## Features
 
