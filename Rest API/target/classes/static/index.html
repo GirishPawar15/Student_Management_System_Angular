@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Student Management System</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add Student
+                </button>
+                <button class="btn btn-secondary" onclick="loadStatistics()">
+                    <i class="fas fa-chart-bar"></i> Statistics
+                </button>
+            </div>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search students by name..." onkeyup="searchStudents()">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="filter-controls">
+                <select id="statusFilter" onchange="filterStudents()">
+                    <option value="">All Status</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="GRADUATED">Graduated</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="WITHDRAWN">Withdrawn</option>
+                </select>
+                <select id="majorFilter" onchange="filterStudents()">
+                    <option value="">All Majors</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Business">Business</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Science">Science</option>
+                </select>
+                <input type="number" id="gpaFilter" placeholder="Min GPA" step="0.1" min="0" max="4" onchange="filterStudents()">
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container" id="statsContainer" style="display: none;">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3 id="totalStudents">0</h3>
+                <p>Total Students</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-check"></i>
+                <h3 id="activeStudents">0</h3>
+                <p>Active Students</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-clock"></i>
+                <h3 id="inactiveStudents">0</h3>
+                <p>Inactive Students</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-graduate"></i>
+                <h3 id="graduatedStudents">0</h3>
+                <p>Graduated Students</p>
+            </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-container">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Major</th>
+                        <th>GPA</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                    <!-- Students will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- No Data Message -->
+        <div id="noDataMessage" class="no-data" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <h3>No Students Found</h3>
+            <p>Add some students to get started!</p>
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Student</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="studentForm" onsubmit="saveStudent(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth">
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollmentDate">Enrollment Date</label>
+                        <input type="date" id="enrollmentDate" name="enrollmentDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="2"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="major">Major</label>
+                        <select id="major" name="major">
+                            <option value="">Select Major</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Business">Business</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Science">Science</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gpa">GPA</label>
+                        <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                        <option value="GRADUATED">Graduated</option>
+                        <option value="SUSPENDED">Suspended</option>
+                        <option value="WITHDRAWN">Withdrawn</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this student?</p>
+                <p><strong id="deleteStudentName"></strong></p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
