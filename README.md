@@ -9,7 +9,7 @@
       Contact:zkazi0007@gmail.com
 
 ## Output / UI 
-
+ <img src ="https://github.com/GirishPawar15/Student_Management_System_Angular/blob/main/Screenshot%202025-08-17%20130452.png" alt="Logo" width="1000"/>
 ## Features
 
 - **Add Students**: Add new student records with validation
